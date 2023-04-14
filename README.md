@@ -12,3 +12,5 @@ Accurate Hijri Calculator (AHC) is a software for calculating the position and v
 ### Linux
 
 ### Windows
+
+## Developer
