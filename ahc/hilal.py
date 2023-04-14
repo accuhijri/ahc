@@ -12,11 +12,12 @@ from .sunmoon import *
 from .crescent import *
 from .plotting import *
 
-__all__ = ["hilal", "list_hilal_visibility_criteria", "calc_map_odeh", "calc_map_mabims", "calc_map_wujudul_hilal", "calc_map_turkey", "calc_map_danjon"]
+__all__ = ["hilal", "list_hilal_visibility_criteria", "calc_map_odeh", "calc_map_mabims", "calc_map_wujudul_hilal", 
+			"calc_map_turkey", "calc_map_danjon", "calc_map_IQG"]
 
 
 def list_hilal_visibility_criteria(print_list=False):
-	hilal_criteria = ["MABIMS", "Odeh", "Wujudul Hilal", "Turkey", "Danjon"]
+	hilal_criteria = ["MABIMS", "Odeh", "Wujudul Hilal", "Turkey", "Danjon", "Ijtima Qobla Ghurub"]
 	if print_list == True:
 		for ii in range(0,len(hilal_criteria)):
 			print ('%d %s' % (ii+1,hilal_criteria[ii]))
@@ -73,7 +74,7 @@ def calc_map_wujudul_hilal(map_moon_alt):
 
 	return map_data
 
-def calc_map_turkey(map_moon_elong, map_moon_alt, map_moon_age_utc, ijtima_utc, delta_day=0):
+def calc_map_turkey(map_moon_elong, map_moon_alt, map_moon_age_utc, ijtima_utc):
 	dimy, dimx = map_moon_alt.shape[0], map_moon_alt.shape[1]
 	map_data = np.zeros((dimy,dimx)) + float('nan')
 
@@ -90,7 +91,8 @@ def calc_map_turkey(map_moon_elong, map_moon_alt, map_moon_age_utc, ijtima_utc, 
 	t0 = ts.utc(ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day, 0)
 	utc_midnight_plus1 = t0.utc_datetime()
 
-	delt_seconds_until_midnight_utc = (utc_midnight_plus1 - ijtima_utc).seconds
+	#delt_seconds_until_midnight_utc = (utc_midnight_plus1 - ijtima_utc).seconds
+	delt_seconds_until_midnight_utc = calc_timedelta_seconds(ijtima_utc, utc_midnight_plus1)
 
 	rows, cols = np.where(map_moon_age_utc<delt_seconds_until_midnight_utc)    # qualified the criteria
 	map_utc_midnight[rows,cols] = 1
@@ -102,11 +104,11 @@ def calc_map_turkey(map_moon_elong, map_moon_alt, map_moon_age_utc, ijtima_utc, 
 	time_zone_str = 'Pacific/Auckland'
 	loc_name = 'NEW ZEALAND Wellington'
 	location = set_location(latitude, longitude, elevation)
-	if delta_day == 0:
-		fajr_utc_NZ = fajr_time_utc(location, year=ijtima_utc.year, month=ijtima_utc.month, day=ijtima_utc.day, temperature_C=10.0, pressure_mbar=1030.0, fajr_sun_altitude=-20.0)
-	else:
-		ijtima_utc_plus1 = ijtima_utc + timedelta(days=1)
-		fajr_utc_NZ = fajr_time_utc(location, year=ijtima_utc_plus1.year, month=ijtima_utc_plus1.month, day=ijtima_utc_plus1.day, temperature_C=10.0, pressure_mbar=1030.0, fajr_sun_altitude=-20.0)
+	#if delta_day == 0:
+	fajr_utc_NZ = fajr_time_utc(location, year=ijtima_utc.year, month=ijtima_utc.month, day=ijtima_utc.day, temperature_C=10.0, pressure_mbar=1030.0, fajr_sun_altitude=-20.0)
+	#else:
+	#	ijtima_utc_plus1 = ijtima_utc + timedelta(days=1)
+	#	fajr_utc_NZ = fajr_time_utc(location, year=ijtima_utc_plus1.year, month=ijtima_utc_plus1.month, day=ijtima_utc_plus1.day, temperature_C=10.0, pressure_mbar=1030.0, fajr_sun_altitude=-20.0)
 
 	return map_data, map_utc_midnight, fajr_utc_NZ
 
@@ -121,6 +123,19 @@ def calc_map_danjon(map_moon_elong):
 	map_data[rows,cols] = 1
 
 	return map_data
+
+def calc_map_IQG(map_moon_age_utc):
+	dimy, dimx = map_moon_age_utc.shape[0], map_moon_age_utc.shape[1]
+	map_data = np.zeros((dimy,dimx)) + float('nan')
+
+	rows, cols = np.where(map_moon_age_utc>0.0)
+	map_data[rows,cols] = 0
+
+	rows, cols = np.where(map_moon_age_utc<=0.0)
+	map_data[rows,cols] = 1
+
+	return map_data
+
 
 
 class hilal:
@@ -209,26 +224,41 @@ class hilal:
 					plot_visibility_map_wujudul_hilal(map_data, self.hijri_year, self.hijri_month, ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day)
 
 			elif criterion=='Turkey' or criterion==4:
-				map_data, map_utc_midnight, fajr_utc_NZ = calc_map_turkey(map_moon_properties['elong'], map_moon_properties['alt'], map_moon_properties['age_utc'], ijtima_utc, delta_day=0)
+				map_data, map_utc_midnight, fajr_utc_NZ = calc_map_turkey(map_moon_properties['elong'], map_moon_properties['alt'], map_moon_properties['age_utc'], ijtima_utc)
 				plot_visibility_map_turkey(map_data, self.hijri_year, self.hijri_month, ijtima_utc.year, ijtima_utc.month, ijtima_utc.day, map_utc_midnight, fajr_utc_NZ, ijtima_utc)
-				if self.plus_1day == True:
-					ijtima_utc_plus1 = ijtima_utc + timedelta(days=1)
-					map_data, map_utc_midnight, fajr_utc_NZ = calc_map_turkey(map_moon_properties['elong1'], map_moon_properties['alt1'], map_moon_properties['age_utc1'], ijtima_utc, delta_day=1)
-					plot_visibility_map_turkey(map_data, self.hijri_year, self.hijri_month, ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day, map_utc_midnight, fajr_utc_NZ, ijtima_utc)
+				#if self.plus_1day == True:
+				#	ijtima_utc_plus1 = ijtima_utc + timedelta(days=1)
+				#	map_data, map_utc_midnight, fajr_utc_NZ = calc_map_turkey(map_moon_properties['elong1'], map_moon_properties['alt1'], map_moon_properties['age_utc1'], ijtima_utc)
+				#	plot_visibility_map_turkey(map_data, self.hijri_year, self.hijri_month, ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day, map_utc_midnight, fajr_utc_NZ, ijtima_utc)
 
 			elif criterion=='Danjon' or criterion==5:
 				map_data = calc_map_danjon(map_moon_properties['elong'])
 				plot_visibility_map_danjon(map_data, self.hijri_year, self.hijri_month, ijtima_utc.year, ijtima_utc.month, ijtima_utc.day)
 				if self.plus_1day == True:
-					map_data = calc_map_danjon(map_moon_properties['elong'])
+					map_data = calc_map_danjon(map_moon_properties['elong1'])
 					ijtima_utc_plus1 = ijtima_utc + timedelta(days=1)
 					plot_visibility_map_danjon(map_data, self.hijri_year, self.hijri_month, ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day)
+
+			elif criterion=="Ijtima Qobla Ghurub" or criterion==6:
+				map_data = calc_map_IQG(map_moon_properties['age_utc'])
+				plot_visibility_map_IQG(map_data, self.hijri_year, self.hijri_month, ijtima_utc.year, ijtima_utc.month, ijtima_utc.day)
+				if self.plus_1day == True:
+					map_data = calc_map_IQG(map_moon_properties['age_utc1'])
+					ijtima_utc_plus1 = ijtima_utc + timedelta(days=1)
+					plot_visibility_map_IQG(map_data, self.hijri_year, self.hijri_month, ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day)
+
+
+
 
 	def calculate_hilal_data(self, latitude, longitude, elevation, time_zone_str, loc_name=None, 
 					delta_day=0, temperature_C=10.0, pressure_mbar=1030.0, sun_radius_degrees=0.2665, moon_radius_degrees=0.2575):
 
 		crescent_data(self.hijri_year, self.hijri_month, latitude, longitude, elevation, time_zone_str, loc_name=loc_name, delta_day=delta_day, 
 					temperature_C=temperature_C, pressure_mbar=pressure_mbar, sun_radius_degrees=sun_radius_degrees, moon_radius_degrees=moon_radius_degrees)
+
+
+	#def make_pdf_report(self, ):
+
 
 
 

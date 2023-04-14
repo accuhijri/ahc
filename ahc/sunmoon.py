@@ -10,7 +10,8 @@ __all__ = ["list_hijri_months", "hijri_month", "set_location", "convert_utc_to_l
 			"sunrise_sunset_local", "sun_position_time_utc", "sun_position_time_local", "moon_position_time_utc", "moon_position_time_local", 
 			"moon_elongation_time_utc", "moon_elongation_time_local", "moon_illumination_width_utc", "moon_illumination_width_local",
 			"find_new_moon_dates", "ref_hijri_ijtima", "newmoon_hijri_month_utc", "newmoon_hijri_month_local_time", "refraction_horizon_degree", 
-			"moonrise_moonset_utc", "moonrise_moonset_local", "print_angle", "print_timedelta", "print_timedelta_tz", "fajr_time_utc", "fajr_time_local"]
+			"moonrise_moonset_utc", "moonrise_moonset_local", "print_angle", "print_timedelta", "print_timedelta_tz", "fajr_time_utc", 
+			"fajr_time_local", "calc_timedelta_seconds"]
 
 global ts, ephem
 ts = api.load.timescale()
@@ -197,7 +198,7 @@ def fajr_time_utc(location, year=None, month=None, day=None, temperature_C=10.0,
 	horizon_degrees = h.degrees - refraction_horizon_degree(temperature_C, pressure_mbar)
 
 	radius_degrees = horizon_degrees -1*fajr_sun_altitude
-	
+
 	t0 = ts.utc(year, month, day, 0)
 	t1 = ts.utc(t0.utc_datetime() + timedelta(days=1))
 
@@ -562,6 +563,10 @@ def newmoon_hijri_month_local_time(hijri_year, hijri_month, time_zone_str):
 	local_time = convert_utc_to_localtime(time_zone_str, utc_datetime=utc_datetime)
 	return local_time
 
+def calc_timedelta_seconds(datetime1, datetime2):
+	timedelta = datetime2 - datetime1
+	timedelta_s = (timedelta.days*86400.0) + timedelta.seconds
+	return timedelta_s
 
 def print_angle(angle_degree):
 	return Angle(degrees=angle_degree).dstr(format=u'{0}{1}°{2:02}′{3:02}.{4:0{5}}″')

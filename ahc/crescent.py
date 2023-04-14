@@ -229,8 +229,9 @@ def get_map_moon_properties_atsunset(year, month, day, ijtima_utc, plus_1day=Tru
 					moon_elong = moon_elongation_time_utc(location=location, utc_datetime=sunset)
 					moon_elong_geo = moon_elongation_time_utc(utc_datetime=sunset)
 					illumination, moon_width, parallax, SD = moon_illumination_width_utc(location=location, utc_datetime=sunset)
-					moon_age_utc_delta = sunset - ijtima_utc
-					moon_age_utc_seconds = moon_age_utc_delta.seconds
+					#moon_age_utc_delta = sunset - ijtima_utc
+					#moon_age_utc_seconds = moon_age_utc_delta.seconds
+					moon_age_utc_seconds = calc_timedelta_seconds(ijtima_utc, sunset)
 
 				map_moon_alt[yy][xx] = moon_alt
 				map_moon_arcv[yy][xx] = moon_arcv
@@ -286,8 +287,9 @@ def get_map_moon_properties_atsunset(year, month, day, ijtima_utc, plus_1day=Tru
 						moon_elong = moon_elongation_time_utc(location=location, utc_datetime=sunset)
 						moon_elong_geo = moon_elongation_time_utc(utc_datetime=sunset)
 						illumination, moon_width, parallax, SD = moon_illumination_width_utc(location=location, utc_datetime=sunset)
-						moon_age_utc_delta = sunset - ijtima_utc
-						moon_age_utc_seconds = moon_age_utc_delta.seconds
+						#moon_age_utc_delta = sunset - ijtima_utc
+						#moon_age_utc_seconds = moon_age_utc_delta.seconds
+						moon_age_utc_seconds = calc_timedelta_seconds(ijtima_utc, sunset)
 
 					map_moon_alt[yy][xx] = moon_alt
 					map_moon_arcv[yy][xx] = moon_arcv
@@ -305,7 +307,7 @@ def get_map_moon_properties_atsunset(year, month, day, ijtima_utc, plus_1day=Tru
 
 				count = count + 1
 				sys.stdout.write('\r')
-				sys.stdout.write('progress: %d of %d (%d%%)' % (count,nlat*nlong,count*100/nlong/nlat))
+				sys.stdout.write('progress: %d of %d (%d%%)' % (count,(nlat-1)*(nlong-1),count*100/(nlong-1)/(nlat-1)))
 				sys.stdout.flush()
 
 		map_moon_properties['alt1'] = map_moon_alt
@@ -357,8 +359,10 @@ def crescent_data(hijri_year, hijri_month, latitude, longitude, elevation, time_
 	illumination, width, parallax, SD = moon_illumination_width_local(time_zone_str, location=location, local_datetime=sunset_local)
 
 	# get lag time and the hilal's age
-	moon_lag_time = moonset_local - sunset_local
-	moon_age = sunset_local - ijtima_local
+	#moon_lag_time = moonset_local - sunset_local 
+	#moon_age = sunset_local - ijtima_local 
+	moon_lag_time = calc_timedelta_seconds(sunset_local, moonset_local)
+	moon_age = calc_timedelta_seconds(ijtima_local, sunset_local)
 
 	# get time differnce between UTC and local
 	sunset_utc = convert_localtime_to_utc(time_zone_str, local_datetime=sunset_local)
@@ -382,8 +386,8 @@ def crescent_data(hijri_year, hijri_month, latitude, longitude, elevation, time_
 	print ('=====================================================================================\n')
 	print ('- Conjuction time: %d-%d-%d %02d:%02d:%02d LT or %d-%d-%d %02d:%02d:%02d UTC' % (ijtima_local.day,ijtima_local.month,ijtima_local.year,ijtima_local.hour,ijtima_local.minute,ijtima_local.second,ijtima_utc.day,ijtima_utc.month,ijtima_utc.year,ijtima_utc.hour,ijtima_utc.minute,ijtima_utc.second))
 	print ('- Sunset: %02d:%02d:%02d                       - Moonset: %02d:%02d:%02d' % (sunset_local.hour,sunset_local.minute,sunset_local.second, moonset_local.hour,moonset_local.minute,moonset_local.second))
-	print ('- Sun altitude: '+print_angle(sun_alt)+'              - Moon age: '+print_timedelta(moon_age.seconds))
-	print ('- Sun azimuth: '+print_angle(sun_az)+'              - Moon lag time: '+print_timedelta(moon_lag_time.seconds))
+	print ('- Sun altitude: '+print_angle(sun_alt)+'              - Moon age: '+print_timedelta(moon_age))
+	print ('- Sun azimuth: '+print_angle(sun_az)+'              - Moon lag time: '+print_timedelta(moon_lag_time))
 	print ('- Crescent width: '+print_angle(width)+'             - Moon altitude: '+print_angle(moon_alt))
 	print ('- Moon illumination: %.2f' % illumination+' %              - Moon azimuth: '+print_angle(moon_az))
 	print ('- Moon distance: %.2f' % moon_dist+' km            - Moon elongation (topocentric): '+print_angle(moon_elong))

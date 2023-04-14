@@ -101,8 +101,9 @@ for mm in range(int(nmonths)):
 					moon_elong = sm.moon_elongation_time_utc(location=location, utc_datetime=sunset)
 					moon_elong_geo = sm.moon_elongation_time_utc(utc_datetime=sunset)
 					illumination, moon_width, parallax, SD = sm.moon_illumination_width_utc(location=location, utc_datetime=sunset)
-					moon_age_utc_delta = sunset - ijtima_utc
-					moon_age_utc_seconds = moon_age_utc_delta.seconds
+					#moon_age_utc_delta = sunset - ijtima_utc
+					#moon_age_utc_seconds = moon_age_utc_delta.seconds 
+					moon_age_utc_seconds = sm.calc_timedelta_seconds(ijtima_utc, sunset)
 
 				map_moon_alt[yy][xx] = moon_alt
 				map_moon_arcv[yy][xx] = moon_arcv
@@ -149,8 +150,9 @@ for mm in range(int(nmonths)):
 					moon_elong = sm.moon_elongation_time_utc(location=location, utc_datetime=sunset)
 					moon_elong_geo = sm.moon_elongation_time_utc(utc_datetime=sunset)
 					illumination, moon_width, parallax, SD = sm.moon_illumination_width_utc(location=location, utc_datetime=sunset)
-					moon_age_utc_delta = sunset - ijtima_utc
-					moon_age_utc_seconds = moon_age_utc_delta.seconds
+					#moon_age_utc_delta = sunset - ijtima_utc
+					#moon_age_utc_seconds = moon_age_utc_delta.seconds
+					moon_age_utc_seconds = sm.calc_timedelta_seconds(ijtima_utc, sunset)
 
 				map_moon_alt1[yy][xx] = moon_alt
 				map_moon_arcv1[yy][xx] = moon_arcv

@@ -222,7 +222,7 @@ def plot_map_moon_age_utc_localsunset(map_moon_age_utc0, hijri_year, hijri_month
 
 	fig = plt.figure(figsize=(15,7))
 	ax = plt.subplot()
-	plt.title('Moon width of %s %d \n Calculated at sunset time on %d-%d-%d' % (hijri_months[int(hijri_month)-1],hijri_year,dd,mm,yy), fontsize=16)
+	plt.title('Moon age UTC of %s %d \n Calculated at sunset time on %d-%d-%d' % (hijri_months[int(hijri_month)-1],hijri_year,dd,mm,yy), fontsize=16)
 	plt.ylim(-70,80)
 	plt.xlim(-180+2,180-2)
 	plt.setp(ax.get_xticklabels(), fontsize=13)
@@ -352,7 +352,7 @@ def plot_visibility_map_wujudul_hilal(data_map, hijri_year, hijri_month, yy, mm,
 
 	fig = plt.figure(figsize=(15,7))
 	ax = plt.subplot()
-	plt.title('Crescent visibility map of %s %d based on Wujudul Hilal criterion \n Calculated at sunset time on %d-%d-%d' % (hijri_months[int(hijri_month)-1],hijri_year,dd,mm,yy), fontsize=16)
+	plt.title('Crescent map of %s %d based on Wujudul Hilal criterion \n Calculated at sunset time on %d-%d-%d' % (hijri_months[int(hijri_month)-1],hijri_year,dd,mm,yy), fontsize=16)
 	plt.ylim(-70,80)
 	plt.xlim(-180+2,180-2)
 	plt.setp(ax.get_xticklabels(), fontsize=13)
@@ -472,7 +472,44 @@ def plot_visibility_map_danjon(data_map, hijri_year, hijri_month, yy, mm, dd):
 	plt.savefig(name_plot)
 
 
+def plot_visibility_map_IQG(data_map, hijri_year, hijri_month, yy, mm, dd):
+	from matplotlib.colors import ListedColormap
 
+	hijri_months = list_hijri_months()
+
+	cmap = ListedColormap(["green", "red"])
+
+	fig = plt.figure(figsize=(15,7))
+	ax = plt.subplot()
+	plt.title('Crescent map of %s %d based on Ijtima Qobla Ghurub \n Calculated at sunset time on %d-%d-%d' % (hijri_months[int(hijri_month)-1],hijri_year,dd,mm,yy), fontsize=16)
+	plt.ylim(-70,80)
+	plt.xlim(-180+2,180-2)
+	plt.setp(ax.get_xticklabels(), fontsize=13)
+	plt.setp(ax.get_yticklabels(), fontsize=13)
+
+	ax.xaxis.set_major_formatter(StrMethodFormatter(u"{x:.0f}°"))
+	ax.yaxis.set_major_formatter(StrMethodFormatter(u"{x:.0f}°"))
+
+	plt.rc('grid', linestyle=':', color='red', linewidth=2)
+	world.plot(ax=ax, color='lightgray', edgecolor='black', zorder=0)
+	plt.grid(color = 'gray', linestyle = '--', linewidth = 0.5)
+
+	plt.imshow(data_map, origin='lower', alpha=0.4, cmap=cmap, zorder=1, extent=[-180, 180, -90, 90], aspect='auto')
+	#plt.colorbar()
+
+	ax.text(0.01, 0.03, "Accurate Hijri Calculator, by Abdurro'uf", horizontalalignment='left', fontname="Brush Script MT", 
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color='black')
+
+	ax.text(0.8, 0.045, "Qualified", horizontalalignment='left', fontweight='bold', 
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(0))
+
+	ax.text(0.9, 0.045, "Not qualified", horizontalalignment='left', fontweight='bold', 
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(1))
+
+	plt.subplots_adjust(left=0.05, right=0.95, bottom=0.05, top=0.9)
+
+	name_plot = 'map_IQG_%s_%d_%d%d%d.png' % (hijri_months[int(hijri_month)-1],hijri_year,dd,mm,yy)
+	plt.savefig(name_plot)
 
 
 
