@@ -11,7 +11,8 @@ world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
 
 
 __all__ = ["plot_map_moon_alt", "plot_map_moon_arcv", "plot_map_moon_elong", "plot_map_moon_elong_geo", "plot_map_moon_width", "plot_map_moon_age_utc_localsunset", 
-			"plot_visibility_map_odeh", "plot_visibility_map_wujudul_hilal", "plot_visibility_map_mabims", "plot_visibility_map_turkey", "plot_visibility_map_danjon"]
+			"plot_visibility_map_odeh", "plot_visibility_map_wujudul_hilal", "plot_visibility_map_mabims", "plot_visibility_map_turkey", 
+			"plot_visibility_map_danjon", "plot_visibility_map_IQG"]
 
 
 def plot_map_moon_alt(map_moon_alt, hijri_year, hijri_month, yy, mm, dd):
@@ -470,7 +471,6 @@ def plot_visibility_map_danjon(data_map, hijri_year, hijri_month, yy, mm, dd):
 
 	name_plot = 'map_danjon_%s_%d_%d%d%d.png' % (hijri_months[int(hijri_month)-1],hijri_year,dd,mm,yy)
 	plt.savefig(name_plot)
-
 
 def plot_visibility_map_IQG(data_map, hijri_year, hijri_month, yy, mm, dd):
 	from matplotlib.colors import ListedColormap
