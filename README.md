@@ -9,5 +9,8 @@ This software is developed and maintained by [Abdurro'uf](https://aabdurrouf.git
  
 ## Installation
 
+```
+pip install ahc
+```
 
 ## Some features
