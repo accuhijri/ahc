@@ -41,5 +41,5 @@ setup(
     package_data={"": ["README.md", "LICENSE"]},
     #scripts=glob.glob("scripts/*.py"),
     include_package_data=True,
-    install_requires=["numpy", "skyfield==1.45", "datetime", "pytz", "pymeeus", "astropy", "matplotlib", "geopandas"],
+    install_requires=["numpy", "skyfield==1.45", "datetime", "pytz", "pymeeus", "astropy", "matplotlib"],
 )
