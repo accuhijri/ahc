@@ -1,0 +1,8 @@
+numpy
+skyfield=1.45
+datetime 
+pytz
+pymeeus 
+astropy
+matplotlib
+geopandas
