@@ -54,11 +54,11 @@ def calc_map_mabims(map_moon_elong_geo, map_moon_alt):
 	dimy, dimx = map_moon_alt.shape[0], map_moon_alt.shape[1]
 	map_data = np.zeros((dimy,dimx)) + float('nan')
 
-	rows, cols = np.where((map_moon_alt>3.0) & (map_moon_elong_geo>6.4))
-	map_data[rows,cols] = 0
-
 	rows, cols = np.where((map_moon_alt<=3.0) | (map_moon_elong_geo<=6.4))
 	map_data[rows,cols] = 1
+	
+	rows, cols = np.where((map_moon_alt>3.0) & (map_moon_elong_geo>6.4))
+	map_data[rows,cols] = 0
 
 	return map_data
 
@@ -78,11 +78,11 @@ def calc_map_turkey(map_moon_elong, map_moon_alt, map_moon_age_utc, ijtima_utc):
 	dimy, dimx = map_moon_alt.shape[0], map_moon_alt.shape[1]
 	map_data = np.zeros((dimy,dimx)) + float('nan')
 
-	rows, cols = np.where((map_moon_alt>5.0) & (map_moon_elong>8.0))
-	map_data[rows,cols] = 0
-
 	rows, cols = np.where((map_moon_alt<=5.0) | (map_moon_elong<=8.0))
 	map_data[rows,cols] = 1
+
+	rows, cols = np.where((map_moon_alt>5.0) & (map_moon_elong>8.0))
+	map_data[rows,cols] = 0
 
 	# locate area where local sunset occur before midnight UTC
 	map_utc_midnight = np.zeros((dimy,dimx)) + float('nan')
@@ -246,9 +246,6 @@ class hilal:
 					map_data = calc_map_IQG(map_moon_properties['age_utc1'])
 					ijtima_utc_plus1 = ijtima_utc + timedelta(days=1)
 					plot_visibility_map_IQG(map_data, self.hijri_year, self.hijri_month, ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day)
-
-
-
 
 	def calculate_hilal_data(self, latitude, longitude, elevation, time_zone_str, loc_name=None, 
 					delta_day=0, temperature_C=10.0, pressure_mbar=1030.0, sun_radius_degrees=0.2665, moon_radius_degrees=0.2575):

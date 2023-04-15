@@ -89,7 +89,6 @@ def get_map_moon_arcv_atsunset(year, month, day, min_lat=-60.0, max_lat=60.0, mi
 	return map_moon_arcv	
 
 
-
 def get_map_moon_elongation_atsunset(year, month, day, min_lat=-60.0, max_lat=60.0, min_long=-180.0, max_long=180.0, factor=0.5):
 	import sys
 
@@ -229,8 +228,6 @@ def get_map_moon_properties_atsunset(year, month, day, ijtima_utc, plus_1day=Tru
 					moon_elong = moon_elongation_time_utc(location=location, utc_datetime=sunset)
 					moon_elong_geo = moon_elongation_time_utc(utc_datetime=sunset)
 					illumination, moon_width, parallax, SD = moon_illumination_width_utc(location=location, utc_datetime=sunset)
-					#moon_age_utc_delta = sunset - ijtima_utc
-					#moon_age_utc_seconds = moon_age_utc_delta.seconds
 					moon_age_utc_seconds = calc_timedelta_seconds(ijtima_utc, sunset)
 
 				map_moon_alt[yy][xx] = moon_alt
@@ -287,8 +284,6 @@ def get_map_moon_properties_atsunset(year, month, day, ijtima_utc, plus_1day=Tru
 						moon_elong = moon_elongation_time_utc(location=location, utc_datetime=sunset)
 						moon_elong_geo = moon_elongation_time_utc(utc_datetime=sunset)
 						illumination, moon_width, parallax, SD = moon_illumination_width_utc(location=location, utc_datetime=sunset)
-						#moon_age_utc_delta = sunset - ijtima_utc
-						#moon_age_utc_seconds = moon_age_utc_delta.seconds
 						moon_age_utc_seconds = calc_timedelta_seconds(ijtima_utc, sunset)
 
 					map_moon_alt[yy][xx] = moon_alt
@@ -358,20 +353,20 @@ def crescent_data(hijri_year, hijri_month, latitude, longitude, elevation, time_
 	# get moon illumination, width, and horizontal parallax
 	illumination, width, parallax, SD = moon_illumination_width_local(time_zone_str, location=location, local_datetime=sunset_local)
 
-	# get lag time and the hilal's age
-	#moon_lag_time = moonset_local - sunset_local 
-	#moon_age = sunset_local - ijtima_local 
+	# get lag time and the hilal's age 
 	moon_lag_time = calc_timedelta_seconds(sunset_local, moonset_local)
 	moon_age = calc_timedelta_seconds(ijtima_local, sunset_local)
 
 	# get time differnce between UTC and local
 	sunset_utc = convert_localtime_to_utc(time_zone_str, local_datetime=sunset_local)
-	delta_time_tz = datetime(sunset_local.year, sunset_local.month, sunset_local.day, sunset_local.hour, sunset_local.minute, sunset_local.second) - datetime(sunset_utc.year, sunset_utc.month, sunset_utc.day, sunset_utc.hour, sunset_utc.minute, sunset_utc.second)
+	delta_time_tz = calc_timedelta_seconds(datetime(ijtima_utc.year, ijtima_utc.month, ijtima_utc.day, ijtima_utc.hour, ijtima_utc.minute, ijtima_utc.second), datetime(ijtima_local.year, ijtima_local.month, ijtima_local.day, ijtima_local.hour, ijtima_local.minute, ijtima_local.second))
+	
 	print ('\n')
 	print ("                 Accurate Hijri Calculator (AHC)")
 	print ('                  Crescent data for %s %d' % (hijri_months_string[int(hijri_month)-1],hijri_year))
 	print ('\n')
-	print ('- Calculations are done for sunset time at %02d:%02d:%02d on %d-%d-%d' % (sunset_local.hour,sunset_local.minute,sunset_local.second,calc_ijtima_local.day,calc_ijtima_local.month,calc_ijtima_local.year))
+	#print ('- Calculations are done for sunset time at %02d:%02d:%02d on %d-%d-%d' % (sunset_local.hour,sunset_local.minute,sunset_local.second,calc_ijtima_local.day,calc_ijtima_local.month,calc_ijtima_local.year))
+	print ('- Calculations are done for sunset time at %02d:%02d:%02d on %d-%d-%d' % (sunset_local.hour,sunset_local.minute,sunset_local.second,sunset_local.day,sunset_local.month,sunset_local.year))
 	print ('- All data are in local observer time')
 	print ('- Atmosphere refraction: Temperature: %d °C  Pressure: %d mb' % (temperature_C, pressure_mbar))
 	if loc_name is None:
@@ -379,10 +374,7 @@ def crescent_data(hijri_year, hijri_month, latitude, longitude, elevation, time_
 	else:
 		print ('- Location: '+loc_name)
 	print ('   - Long: '+print_angle(longitude)+'  Lat: '+print_angle(latitude)+'  Elev: %.2f m' % elevation)
-	if longitude > 0:
-		print ('   - Time zone: '+time_zone_str+' +'+print_timedelta_tz(delta_time_tz.seconds))
-	else:
-		print ('   - Time zone: '+time_zone_str+' -'+print_timedelta_tz(delta_time_tz.seconds))
+	print ('   - Time zone: '+time_zone_str+' '+print_timedelta_tz(delta_time_tz))
 	print ('=====================================================================================\n')
 	print ('- Conjuction time: %d-%d-%d %02d:%02d:%02d LT or %d-%d-%d %02d:%02d:%02d UTC' % (ijtima_local.day,ijtima_local.month,ijtima_local.year,ijtima_local.hour,ijtima_local.minute,ijtima_local.second,ijtima_utc.day,ijtima_utc.month,ijtima_utc.year,ijtima_utc.hour,ijtima_utc.minute,ijtima_utc.second))
 	print ('- Sunset: %02d:%02d:%02d                       - Moonset: %02d:%02d:%02d' % (sunset_local.hour,sunset_local.minute,sunset_local.second, moonset_local.hour,moonset_local.minute,moonset_local.second))

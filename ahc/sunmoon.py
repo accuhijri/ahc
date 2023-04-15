@@ -44,24 +44,6 @@ def set_location(latitude, longitude, elevation):
 	location = api.Topos(lat_str, long_str, elevation_m=elevation)
 	return location
 
-def old_convert_utc_to_localtime(utc_datetime, time_zone_str):
-	time_zone = timezone(time_zone_str)
-
-	local_datetime = utc_datetime.astimezone(time_zone)
-
-	return local_datetime
-
-
-def old_convert_localtime_to_utc(year, month, day, hour, minute, second, time_zone_str):
-	time_zone = timezone(time_zone_str)
-
-	d = datetime(year, month, day, hour, minute, second)
-	tz = time_zone.localize(d)
-	t = ts.from_datetime(tz)
-	utc_datetime = t.utc_datetime()
-
-	return utc_datetime
-
 
 def convert_utc_to_localtime(time_zone_str, utc_datetime=None, year=None, month=None, day=None, hour=None, minute=None, second=None):
 	time_zone = timezone(time_zone_str)
@@ -142,41 +124,6 @@ def sunrise_sunset_utc(location, year=None, month=None, day=None, temperature_C=
 	return sunrise, sunset
 
 
-def old_sunrise_sunset_utc(location, year=None, month=None, day=None):
-	t0 = ts.utc(year, month, day, 0)
-
-	# t1 = t0 plus two days
-	t1 = ts.utc(t0.utc_datetime() + timedelta(days=2))
-
-	t, y = almanac.find_discrete(t0, t1, almanac.sunrise_sunset(ephem, location))
-	#print (t.utc_datetime())
-	sunrise = None
-	sunset = None
-	for time, is_sunrise in zip(t, y):
-		if is_sunrise:
-			sunrise0 = time.utc_datetime()
-			if (sunrise0.hour*60.0)+sunrise0.minute+(sunrise0.second/60.0) + location.longitude.degrees*4 < 0.0:
-				if sunrise0.day == day+1:
-					sunrise = sunrise0
-			else:
-				if sunrise0.day == day:
-					sunrise = sunrise0
-
-		else:
-			sunset0 = time.utc_datetime()
-			if (sunset0.hour*60.0)+sunset0.minute+(sunset0.second/60.0) + location.longitude.degrees*4 < 0.0:
-				if sunset0.day == day+1:
-					sunset = sunset0
-			else:
-				if sunset0.day == day:
-					sunset = sunset0
-
-	sunset = sunset + timedelta(minutes=4, seconds=4.35)
-	sunrise = sunrise - timedelta(minutes=4, seconds=4.0)
-
-	return sunrise, sunset
-
-
 def sunrise_sunset_local(location, time_zone_str, year=None, month=None, day=None, temperature_C=10.0, pressure_mbar=1030.0, radius_degrees=0.2665):
 	sunrise_utc, sunset_utc = sunrise_sunset_utc(location, year=year, month=month, day=day, 
 												temperature_C=temperature_C, pressure_mbar=pressure_mbar, radius_degrees=radius_degrees)
@@ -186,7 +133,7 @@ def sunrise_sunset_local(location, time_zone_str, year=None, month=None, day=Non
 	return sunrise_local, sunset_local
 
 
-def fajr_time_utc(location, year=None, month=None, day=None, temperature_C=10.0, pressure_mbar=1030.0, fajr_sun_altitude=-20.0):
+def fajr_time_utc(location, year=None, month=None, day=None, temperature_C=10.0, pressure_mbar=1030.0, fajr_sun_altitude=-18.0):
 
 	# get corection due to elevation
 	elev = location.elevation
@@ -202,27 +149,16 @@ def fajr_time_utc(location, year=None, month=None, day=None, temperature_C=10.0,
 	t0 = ts.utc(year, month, day, 0)
 	t1 = ts.utc(t0.utc_datetime() + timedelta(days=1))
 
-	#tinit = ts.utc(year, month, day, 0)
-	#t0 = ts.utc(tinit.utc_datetime() - timedelta(days=1))
-	#t1 = ts.utc(tinit.utc_datetime() + timedelta(days=1))
-
 	t, y = almanac.find_discrete(t0, t1, almanac.risings_and_settings(ephem, ephem['Sun'], location, horizon_degrees=horizon_degrees, radius_degrees=radius_degrees))
 	fajr_time = None
 	for time, is_sunrise in zip(t, y):
 		if is_sunrise:
 			fajr_time = time.utc_datetime()
-			#if (sunrise0.hour*60.0)+sunrise0.minute+(sunrise0.second/60.0) + location.longitude.degrees*4 > 24.0:
-			#	day_plus1 = datetime(year,month,day,0,0,0) + timedelta(days=1)
-			#	if sunrise0.day == day_plus1.day:
-			#		fajr_time = sunrise0
-			#else:
-			#	if sunrise0.day == day:
-			#		fajr_time = sunrise0
 
 	return fajr_time
 
 
-def fajr_time_local(location, time_zone_str, year=None, month=None, day=None, temperature_C=10.0, pressure_mbar=1030.0, fajr_sun_altitude=-20.0):
+def fajr_time_local(location, time_zone_str, year=None, month=None, day=None, temperature_C=10.0, pressure_mbar=1030.0, fajr_sun_altitude=-18.0):
 
 	# get corection due to elevation
 	elev = location.elevation
@@ -251,20 +187,7 @@ def fajr_time_local(location, time_zone_str, year=None, month=None, day=None, te
 			if fajr_local.day == day:
 				fajr_time = fajr_local
 
-			#if (sunrise0.hour*60.0)+sunrise0.minute+(sunrise0.second/60.0) + location.longitude.degrees*4 > 24.0:
-			#	day_plus1 = datetime(year,month,day,0,0,0) + timedelta(days=1)
-			#	if sunrise0.day == day_plus1.day:
-			#		fajr_time = sunrise0
-			#else:
-			#	if sunrise0.day == day:
-			#		fajr_time = sunrise0
-
 	return fajr_time
-
-#	fajr_utc = fajr_time_utc(location, year=year, month=month, day=day, temperature_C=temperature_C, pressure_mbar=pressure_mbar, radius_degrees=radius_degrees)
-#	fajr_local = convert_utc_to_localtime(time_zone_str, utc_datetime=fajr_utc)
-
-#	return fajr_local
 
 
 def moonrise_moonset_utc(location, year=None, month=None, day=None, temperature_C=10.0, pressure_mbar=1030.0, radius_degrees=0.2575):
@@ -511,48 +434,6 @@ def newmoon_hijri_month_utc(hijri_year, hijri_month):
 		day_plus1 = datetime(ref_utc_datetime.year,ref_utc_datetime.month,ref_utc_datetime.day,0,0,0) + timedelta(days=1)
 		new_moon_datetimes = find_new_moon_dates(ref_utc_datetime.year-2*(ref_hijri_y-hijri_year+2), 1, 1, day_plus1.year, day_plus1.month, day_plus1.day)
 
-		idx = np.arange(1,len(new_moon_datetimes)+1) - len(new_moon_datetimes)
-		idx1 = np.where((idx%12==hijri_month-1) & ((idx/12).astype(int)-1==hijri_year-ref_hijri_y))
-		utc_datetime = new_moon_datetimes[idx1[0][0]]
-		return utc_datetime
-
-def old_newmoon_hijri_month_utc(hijri_year, hijri_month):
-	""" Function to find the date of new moon associated with given Hijri month and year
-	:param hijri_year:
-
-	:param hijri_month:
-		Month number start from 1.
-	"""
-	ref_hijri_m, ref_hijri_y, ref_utc_datetime = ref_hijri_ijtima()
-
-	if hijri_year > ref_hijri_y:
-		stat_forward = 1
-	elif hijri_year < ref_hijri_y:
-		stat_forward = -1
-	else:
-		if hijri_month > ref_hijri_m:
-			stat_forward = 1
-		elif hijri_month < ref_hijri_m:
-			stat_forward = -1
-		else:
-			stat_forward = 0
-
-	if stat_forward == 0:
-		return ref_utc_datetime
-	elif stat_forward == 1:
-		new_moon_datetimes = find_new_moon_dates(ref_utc_datetime.year, 
-								ref_utc_datetime.month, ref_utc_datetime.day-1, 
-								ref_utc_datetime.year+2*(hijri_year-ref_hijri_y+2), 12, 30)
-		idx = np.arange(0,len(new_moon_datetimes))
-		idx1 = np.where((idx%12==hijri_month-1) & ((idx/12).astype(int)==hijri_year-ref_hijri_y))
-		utc_datetime = new_moon_datetimes[idx1[0][0]]
-		return utc_datetime
-
-	else:
-		new_moon_datetimes = find_new_moon_dates(ref_utc_datetime.year-2*(ref_hijri_y-hijri_year+2),
-								1, 1, ref_utc_datetime.year, ref_utc_datetime.month, 
-								ref_utc_datetime.day+1)
-		#print (new_moon_datetimes)
 		idx = np.arange(1,len(new_moon_datetimes)+1) - len(new_moon_datetimes)
 		idx1 = np.where((idx%12==hijri_month-1) & ((idx/12).astype(int)-1==hijri_year-ref_hijri_y))
 		utc_datetime = new_moon_datetimes[idx1[0][0]]
