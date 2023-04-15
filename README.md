@@ -35,6 +35,7 @@ conda install -c conda-forge geopandas
 ### 1. Calculate the data of hilal (i.e., crescent)
 ```ruby
 from ahc.hilal import hilal
+
 hijri_year = 1444
 hijri_month = 10        # syawal is 10th month in Hijri calendar
 calculate_maps = True 
