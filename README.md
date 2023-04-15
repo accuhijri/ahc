@@ -29,3 +29,54 @@ conda install -c conda-forge geopandas
 ```
 
 ## Some features
+
+### * Calculate the data of hilal (i.e., crescent)
+```ruby
+from ahc.hilal import hilal
+hijri_year = 1444
+hijri_month = 10        # syawal is 10th month in Hijri calendar
+calculate_maps = True 
+plus_1day = True
+hl = hilal(hijri_year=hijri_year, hijri_month=hijri_month, calculate_maps=calculate_maps, plus_1day=plus_1day)
+```
+
+```ruby
+latitude = 3.595196
+longitude = 98.672223
+elevation = 23.0
+time_zone_str = 'Asia/Jakarta'
+loc_name = 'INDONESIA Medan'
+hl.calculate_hilal_data(latitude, longitude, elevation, time_zone_str, loc_name=loc_name, delta_day=0)
+```
+<img src="figures/hd1.png" width=600 height=400>
+
+### * Get maps of moon properties 
+This include maps of moon altitude, longitude (topocentric and geocentric), moon-sun altitude difference (arc of vision; ARCV), moon width, and moon age. Below is an example line of script to get the map of moon altitude.
+```ruby
+hl.map_moon_altitude()
+```
+<img src="figures/moon_alt_Syawal_1444_2042023.png" width=900 height=450>
+
+### * Get map of crescent vibility based on various criteria
+There are 6 criteria that are currently available in AHC: MABIMS, Odeh, Wujudul Hilal, Turkey, Danjon, and Itjima Qobla Ghurub.
+
+#### - Crescent vibility map based on MABIMS criteria
+This citeria is currently (as of 2023) used by the goverments of Indonesia, Malaysia, Singapore, and Brunei Darussalam.
+```ruby
+hl.map_hilal_visibility('MABIMS')
+```
+<img src="figures/map_mabims_Syawal_1444_2042023.png" width=900 height=450>
+
+#### - Crescent visibility map based on Odeh criteria
+This criteria is proposed by Mohammad Odeh in his 2016 [paper](https://www.researchgate.net/publication/225099773_New_Criterion_for_Lunar_Crescent_Visibility) published in the Journal of Experimantal Astronomy.
+```ruby 
+hl.map_hilal_visibility('Odeh')
+```
+<img src="figures/map_odeh_Syawal_1444_2042023.png" width=900 height=450>
+
+#### - Crescent visibility map based on Terkey criteria
+This criteria is proposed by the International Hijri Calendar Union Congress in Istanbul in 2016 to be the criteria for the unified Hijri calendar.
+```ruby
+hl.map_hilal_visibility('Turkey')
+```
+<img src="figures/map_turkey_Syawal_1444_2042023.png" width=900 height=450>
