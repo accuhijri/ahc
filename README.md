@@ -70,7 +70,7 @@ hl.map_hilal_visibility('MABIMS')
 <img src="figures/map_mabims_Syawal_1444_2042023.png" width=900 height=450>
 
 #### 3.2. Crescent visibility map based on Odeh criteria
-This criteria is proposed by Mohammad Odeh in his 2016 [paper](https://www.researchgate.net/publication/225099773_New_Criterion_for_Lunar_Crescent_Visibility) published in the Journal of Experimantal Astronomy.
+This criteria is proposed by Mohammad Odeh in his 2016 [paper](https://link.springer.com/article/10.1007/s10686-005-9002-5) published in the Journal of Experimantal Astronomy.
 ```ruby 
 hl.map_hilal_visibility('Odeh')
 ```
