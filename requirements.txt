@@ -5,4 +5,3 @@ pytz
 pymeeus 
 astropy
 matplotlib
-geopandas
