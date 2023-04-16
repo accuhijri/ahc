@@ -263,8 +263,23 @@ def plot_visibility_map_odeh(data_map, hijri_year, hijri_month, yy, mm, dd):
 
 	hijri_months = list_hijri_months()
 
-	cmap = ListedColormap(["green", "magenta", "blue", "red"])
+	#cmap = ListedColormap(["green", "magenta", "blue", "red"])
+	rows1, cols1 = np.where(data_map==1)
+	rows2, cols2 = np.where(data_map==2)
+	rows3, cols3 = np.where(data_map==3)
+	rows4, cols4 = np.where(data_map==4)
 
+	cl = []
+	if len(rows1)>0:
+		cl.append('green')
+	if len(rows2)>0:
+		cl.append('magenta')
+	if len(rows3)>0:
+		cl.append('blue')
+	if len(rows4)>0:
+		cl.append('red')
+	cmap = ListedColormap(cl)
+ 
 	fig = plt.figure(figsize=(15,7))
 	ax = plt.subplot()
 	plt.title('Crescent visibility map of %s %d based on Odeh criterion \n Calculated at sunset time on %d-%d-%d' % (hijri_months[int(hijri_month)-1],hijri_year,dd,mm,yy), fontsize=16)
@@ -309,7 +324,15 @@ def plot_visibility_map_mabims(data_map, hijri_year, hijri_month, yy, mm, dd):
 
 	hijri_months = list_hijri_months()
 
-	cmap = ListedColormap(["green", "red"])
+	rows0, cols0 = np.where(data_map==0)
+	rows1, cols1 = np.where(data_map==1)
+
+	cl = []
+	if len(rows0)>0:
+		cl.append("green")
+	if len(rows1)>0:
+		cl.append("red")
+	cmap = ListedColormap(cl)
 
 	fig = plt.figure(figsize=(15,7))
 	ax = plt.subplot()
@@ -333,10 +356,10 @@ def plot_visibility_map_mabims(data_map, hijri_year, hijri_month, yy, mm, dd):
 				verticalalignment='center', transform = ax.transAxes, fontsize=11, color='black')
 
 	ax.text(0.8, 0.045, "Visible", horizontalalignment='left', fontweight='bold', 
-				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(0))
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color="green")
 
 	ax.text(0.9, 0.045, "Not visible", horizontalalignment='left', fontweight='bold', 
-				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(1))
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color="red")
 
 	plt.subplots_adjust(left=0.05, right=0.95, bottom=0.05, top=0.9)
 
@@ -349,7 +372,15 @@ def plot_visibility_map_wujudul_hilal(data_map, hijri_year, hijri_month, yy, mm,
 
 	hijri_months = list_hijri_months()
 
-	cmap = ListedColormap(["green", "red"])
+	rows0, cols0 = np.where(data_map==0)
+	rows1, cols1 = np.where(data_map==1)
+
+	cl = []
+	if len(rows0)>0:
+		cl.append("green")
+	if len(rows1)>0:
+		cl.append("red")
+	cmap = ListedColormap(cl)
 
 	fig = plt.figure(figsize=(15,7))
 	ax = plt.subplot()
@@ -373,10 +404,10 @@ def plot_visibility_map_wujudul_hilal(data_map, hijri_year, hijri_month, yy, mm,
 				verticalalignment='center', transform = ax.transAxes, fontsize=11, color='black')
 
 	ax.text(0.8, 0.045, "Qualified", horizontalalignment='left', fontweight='bold', 
-				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(0))
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color="green")
 
 	ax.text(0.9, 0.045, "Not qualified", horizontalalignment='left', fontweight='bold', 
-				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(1))
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color="red")
 
 	plt.subplots_adjust(left=0.05, right=0.95, bottom=0.05, top=0.9)
 
@@ -389,7 +420,15 @@ def plot_visibility_map_turkey(data_map, hijri_year, hijri_month, yy, mm, dd, ma
 
 	hijri_months = list_hijri_months()
 
-	cmap = ListedColormap(["green", "red"])
+	rows0, cols0 = np.where(data_map==0)
+	rows1, cols1 = np.where(data_map==1)
+
+	cl = []
+	if len(rows0)>0:
+		cl.append("green")
+	if len(rows1)>0:
+		cl.append("red")
+	cmap = ListedColormap(cl)
 
 	fig = plt.figure(figsize=(15,7))
 	ax = plt.subplot()
@@ -415,17 +454,18 @@ def plot_visibility_map_turkey(data_map, hijri_year, hijri_month, yy, mm, dd, ma
 	ax.text(0.38, 0.045, "New moon UTC: %d-%d-%d %02d:%02d:%02d" % (ijtima_utc.day,ijtima_utc.month,ijtima_utc.year,ijtima_utc.hour,ijtima_utc.minute,ijtima_utc.second), 
 				horizontalalignment='left', fontweight='bold', verticalalignment='center', transform = ax.transAxes, fontsize=10, color='darkred')
 
-	ax.text(0.38, 0.02, "Fajr NZ UTC: %d-%d-%d %02d:%02d:%02d" % (fajr_utc_NZ.day,fajr_utc_NZ.month,fajr_utc_NZ.year,fajr_utc_NZ.hour,fajr_utc_NZ.minute,fajr_utc_NZ.second), 
+	if fajr_utc_NZ is not None:
+		ax.text(0.38, 0.02, "Fajr NZ UTC: %d-%d-%d %02d:%02d:%02d" % (fajr_utc_NZ.day,fajr_utc_NZ.month,fajr_utc_NZ.year,fajr_utc_NZ.hour,fajr_utc_NZ.minute,fajr_utc_NZ.second), 
 				horizontalalignment='left', fontweight='bold', verticalalignment='center', transform = ax.transAxes, fontsize=10, color='darkred')
 
 	ax.text(0.62, 0.045, "Sunset before midnight UTC", horizontalalignment='left', fontweight='bold', 
 				verticalalignment='center', transform = ax.transAxes, fontsize=11, color='black')
 
 	ax.text(0.83, 0.045, "Visible", horizontalalignment='left', fontweight='bold', 
-				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(0))
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color="green")
 
 	ax.text(0.9, 0.045, "Not visible", horizontalalignment='left', fontweight='bold', 
-				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(1))
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color="red")
 
 	plt.subplots_adjust(left=0.05, right=0.95, bottom=0.05, top=0.9)
 
@@ -438,7 +478,15 @@ def plot_visibility_map_danjon(data_map, hijri_year, hijri_month, yy, mm, dd):
 
 	hijri_months = list_hijri_months()
 
-	cmap = ListedColormap(["green", "red"])
+	rows0, cols0 = np.where(data_map==0)
+	rows1, cols1 = np.where(data_map==1)
+
+	cl = []
+	if len(rows0)>0:
+		cl.append("green")
+	if len(rows1)>0:
+		cl.append("red")
+	cmap = ListedColormap(cl)
 
 	fig = plt.figure(figsize=(15,7))
 	ax = plt.subplot()
@@ -462,10 +510,10 @@ def plot_visibility_map_danjon(data_map, hijri_year, hijri_month, yy, mm, dd):
 				verticalalignment='center', transform = ax.transAxes, fontsize=11, color='black')
 
 	ax.text(0.8, 0.045, "Visible", horizontalalignment='left', fontweight='bold', 
-				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(0))
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color="green")
 
 	ax.text(0.9, 0.045, "Not visible", horizontalalignment='left', fontweight='bold', 
-				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(1))
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color="red")
 
 	plt.subplots_adjust(left=0.05, right=0.95, bottom=0.05, top=0.9)
 
@@ -477,7 +525,15 @@ def plot_visibility_map_IQG(data_map, hijri_year, hijri_month, yy, mm, dd):
 
 	hijri_months = list_hijri_months()
 
-	cmap = ListedColormap(["green", "red"])
+	rows0, cols0 = np.where(data_map==0)
+	rows1, cols1 = np.where(data_map==1)
+
+	cl = []
+	if len(rows0)>0:
+		cl.append("green")
+	if len(rows1)>0:
+		cl.append("red")
+	cmap = ListedColormap(cl)
 
 	fig = plt.figure(figsize=(15,7))
 	ax = plt.subplot()
@@ -501,10 +557,10 @@ def plot_visibility_map_IQG(data_map, hijri_year, hijri_month, yy, mm, dd):
 				verticalalignment='center', transform = ax.transAxes, fontsize=11, color='black')
 
 	ax.text(0.8, 0.045, "Qualified", horizontalalignment='left', fontweight='bold', 
-				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(0))
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color="green")
 
 	ax.text(0.9, 0.045, "Not qualified", horizontalalignment='left', fontweight='bold', 
-				verticalalignment='center', transform = ax.transAxes, fontsize=11, color=cmap(1))
+				verticalalignment='center', transform = ax.transAxes, fontsize=11, color="red")
 
 	plt.subplots_adjust(left=0.05, right=0.95, bottom=0.05, top=0.9)
 

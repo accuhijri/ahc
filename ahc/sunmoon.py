@@ -155,6 +155,15 @@ def fajr_time_utc(location, year=None, month=None, day=None, temperature_C=10.0,
 		if is_sunrise:
 			fajr_time = time.utc_datetime()
 
+	if fajr_time is None:
+		t0 = ts.utc(year, month, day, 0)
+		t1 = ts.utc(t0.utc_datetime() + timedelta(days=2))
+
+		t, y = almanac.find_discrete(t0, t1, almanac.risings_and_settings(ephem, ephem['Sun'], location, horizon_degrees=horizon_degrees, radius_degrees=radius_degrees))
+		for time, is_sunrise in zip(t, y):
+			if is_sunrise:
+				fajr_time = time.utc_datetime()
+
 	return fajr_time
 
 

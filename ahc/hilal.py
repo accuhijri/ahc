@@ -50,39 +50,42 @@ def calc_map_odeh(map_moon_width, map_moon_arcv):
 
 	return map_data
 
-def calc_map_mabims(map_moon_elong_geo, map_moon_alt):
-	dimy, dimx = map_moon_alt.shape[0], map_moon_alt.shape[1]
-	map_data = np.zeros((dimy,dimx)) + float('nan')
 
-	rows, cols = np.where((map_moon_alt<=3.0) | (map_moon_elong_geo<=6.4))
-	map_data[rows,cols] = 1
-	
-	rows, cols = np.where((map_moon_alt>3.0) & (map_moon_elong_geo>6.4))
-	map_data[rows,cols] = 0
+def calc_map_mabims(map_moon_elong_geo, map_moon_alt, map_moon_age_utc):
+	dimy, dimx = map_moon_alt.shape[0], map_moon_alt.shape[1]
+	map_data = np.zeros((dimy,dimx)) + 1
+
+	rows, cols = np.where(np.isnan(map_moon_alt)==True)
+	map_data[rows,cols] = float('nan')
+
+	rows1, cols1 = np.where((map_moon_alt>3.0) & (map_moon_elong_geo>6.4) & (map_moon_age_utc>0.0))
+	map_data[rows1,cols1] = 0 
 
 	return map_data
 
-def calc_map_wujudul_hilal(map_moon_alt):
+
+def calc_map_wujudul_hilal(map_moon_alt, map_moon_age_utc):
 	dimy, dimx = map_moon_alt.shape[0], map_moon_alt.shape[1]
-	map_data = np.zeros((dimy,dimx)) + float('nan')
+	map_data = np.zeros((dimy,dimx)) + 1
 
-	rows, cols = np.where(map_moon_alt>=-0.2575)
-	map_data[rows,cols] = 0
+	rows, cols = np.where(np.isnan(map_moon_alt)==True)
+	map_data[rows,cols] = float('nan')
 
-	rows, cols = np.where(map_moon_alt<-0.2575)
-	map_data[rows,cols] = 1
+	rows1, cols1 = np.where((map_moon_alt>=-0.2575) & (map_moon_age_utc>0.0))
+	map_data[rows1,cols1] = 0
 
 	return map_data
+
 
 def calc_map_turkey(map_moon_elong, map_moon_alt, map_moon_age_utc, ijtima_utc):
 	dimy, dimx = map_moon_alt.shape[0], map_moon_alt.shape[1]
-	map_data = np.zeros((dimy,dimx)) + float('nan')
+	map_data = np.zeros((dimy,dimx)) + 1
 
-	rows, cols = np.where((map_moon_alt<=5.0) | (map_moon_elong<=8.0))
-	map_data[rows,cols] = 1
+	rows, cols = np.where(np.isnan(map_moon_alt)==True)
+	map_data[rows,cols] = float('nan')
 
-	rows, cols = np.where((map_moon_alt>5.0) & (map_moon_elong>8.0))
-	map_data[rows,cols] = 0
+	rows1, cols1 = np.where((map_moon_alt>5.0) & (map_moon_elong>8.0) & (map_moon_age_utc>0.0))
+	map_data[rows1,cols1] = 0
 
 	# locate area where local sunset occur before midnight UTC
 	map_utc_midnight = np.zeros((dimy,dimx)) + float('nan')
@@ -112,27 +115,28 @@ def calc_map_turkey(map_moon_elong, map_moon_alt, map_moon_age_utc, ijtima_utc):
 
 	return map_data, map_utc_midnight, fajr_utc_NZ
 
-def calc_map_danjon(map_moon_elong):
-	dimy, dimx = map_moon_elong.shape[0], map_moon_elong.shape[1]
-	map_data = np.zeros((dimy,dimx)) + float('nan')
 
-	rows, cols = np.where(map_moon_elong>7.0)
-	map_data[rows,cols] = 0
+def calc_map_danjon(map_moon_elong, map_moon_alt, map_moon_age_utc):
+	dimy, dimx = map_moon_alt.shape[0], map_moon_alt.shape[1]
+	map_data = np.zeros((dimy,dimx)) + 1
 
-	rows, cols = np.where(map_moon_elong<=7.0)
-	map_data[rows,cols] = 1
+	rows, cols = np.where(np.isnan(map_moon_alt)==True)
+	map_data[rows,cols] = float('nan')
+
+	rows1, cols1 = np.where((map_moon_alt>0.0) & (map_moon_elong>7.0) & (map_moon_age_utc>0.0))
+	map_data[rows1,cols1] = 0
 
 	return map_data
 
 def calc_map_IQG(map_moon_age_utc):
 	dimy, dimx = map_moon_age_utc.shape[0], map_moon_age_utc.shape[1]
-	map_data = np.zeros((dimy,dimx)) + float('nan')
+	map_data = np.zeros((dimy,dimx)) + 1
 
-	rows, cols = np.where(map_moon_age_utc>0.0)
-	map_data[rows,cols] = 0
+	rows, cols = np.where(np.isnan(map_moon_age_utc)==True)
+	map_data[rows,cols] = float('nan')
 
-	rows, cols = np.where(map_moon_age_utc<=0.0)
-	map_data[rows,cols] = 1
+	rows1, cols1 = np.where(map_moon_age_utc>0.0)
+	map_data[rows1,cols1] = 0
 
 	return map_data
 
@@ -200,10 +204,10 @@ class hilal:
 	def map_hilal_visibility(self, criterion):
 		if self.calculate_maps == True:
 			if criterion=='MABIMS' or criterion==1:
-				map_data = calc_map_mabims(map_moon_properties['elong_geo'], map_moon_properties['alt'])
+				map_data = calc_map_mabims(map_moon_properties['elong_geo'], map_moon_properties['alt'],map_moon_properties['age_utc'])
 				plot_visibility_map_mabims(map_data, self.hijri_year, self.hijri_month, ijtima_utc.year, ijtima_utc.month, ijtima_utc.day)
 				if self.plus_1day == True:
-					map_data = calc_map_mabims(map_moon_properties['elong_geo1'], map_moon_properties['alt1'])
+					map_data = calc_map_mabims(map_moon_properties['elong_geo1'], map_moon_properties['alt1'],map_moon_properties['age_utc1'])
 					ijtima_utc_plus1 = ijtima_utc + timedelta(days=1)
 					plot_visibility_map_mabims(map_data, self.hijri_year, self.hijri_month, ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day)
 
@@ -216,10 +220,10 @@ class hilal:
 					plot_visibility_map_odeh(map_data, self.hijri_year, self.hijri_month, ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day)
 
 			elif criterion=='Wujudul Hilal' or criterion==3:
-				map_data = calc_map_wujudul_hilal(map_moon_properties['alt'])
+				map_data = calc_map_wujudul_hilal(map_moon_properties['alt'],map_moon_properties['age_utc'])
 				plot_visibility_map_wujudul_hilal(map_data, self.hijri_year, self.hijri_month, ijtima_utc.year, ijtima_utc.month, ijtima_utc.day)
 				if self.plus_1day == True:
-					map_data = calc_map_wujudul_hilal(map_moon_properties['alt1'])
+					map_data = calc_map_wujudul_hilal(map_moon_properties['alt1'],map_moon_properties['age_utc1'])
 					ijtima_utc_plus1 = ijtima_utc + timedelta(days=1)
 					plot_visibility_map_wujudul_hilal(map_data, self.hijri_year, self.hijri_month, ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day)
 
@@ -232,10 +236,10 @@ class hilal:
 				#	plot_visibility_map_turkey(map_data, self.hijri_year, self.hijri_month, ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day, map_utc_midnight, fajr_utc_NZ, ijtima_utc)
 
 			elif criterion=='Danjon' or criterion==5:
-				map_data = calc_map_danjon(map_moon_properties['elong'])
+				map_data = calc_map_danjon(map_moon_properties['elong'], map_moon_properties['alt'],map_moon_properties['age_utc'])
 				plot_visibility_map_danjon(map_data, self.hijri_year, self.hijri_month, ijtima_utc.year, ijtima_utc.month, ijtima_utc.day)
 				if self.plus_1day == True:
-					map_data = calc_map_danjon(map_moon_properties['elong1'])
+					map_data = calc_map_danjon(map_moon_properties['elong1'], map_moon_properties['alt1'],map_moon_properties['age_utc1'])
 					ijtima_utc_plus1 = ijtima_utc + timedelta(days=1)
 					plot_visibility_map_danjon(map_data, self.hijri_year, self.hijri_month, ijtima_utc_plus1.year, ijtima_utc_plus1.month, ijtima_utc_plus1.day)
 
@@ -252,9 +256,6 @@ class hilal:
 
 		crescent_data(self.hijri_year, self.hijri_month, latitude, longitude, elevation, time_zone_str, loc_name=loc_name, delta_day=delta_day, 
 					temperature_C=temperature_C, pressure_mbar=pressure_mbar, sun_radius_degrees=sun_radius_degrees, moon_radius_degrees=moon_radius_degrees)
-
-
-	#def make_pdf_report(self, ):
 
 
 
