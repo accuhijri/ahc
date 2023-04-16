@@ -374,7 +374,10 @@ def crescent_data(hijri_year, hijri_month, latitude, longitude, elevation, time_
 	else:
 		print ('- Location: '+loc_name)
 	print ('   - Long: '+print_angle(longitude)+'  Lat: '+print_angle(latitude)+'  Elev: %.2f m' % elevation)
-	print ('   - Time zone: '+time_zone_str+' '+print_timedelta_tz(delta_time_tz))
+	if delta_time_tz<0:
+		print ('   - Time zone: '+time_zone_str+' '+print_timedelta_tz(delta_time_tz))
+	else:
+		print ('   - Time zone: '+time_zone_str+' +'+print_timedelta_tz(delta_time_tz))
 	print ('=====================================================================================\n')
 	print ('- Conjuction time: %d-%d-%d %02d:%02d:%02d LT or %d-%d-%d %02d:%02d:%02d UTC' % (ijtima_local.day,ijtima_local.month,ijtima_local.year,ijtima_local.hour,ijtima_local.minute,ijtima_local.second,ijtima_utc.day,ijtima_utc.month,ijtima_utc.year,ijtima_utc.hour,ijtima_utc.minute,ijtima_utc.second))
 	print ('- Sunset: %02d:%02d:%02d                       - Moonset: %02d:%02d:%02d' % (sunset_local.hour,sunset_local.minute,sunset_local.second, moonset_local.hour,moonset_local.minute,moonset_local.second))
