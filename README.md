@@ -52,7 +52,8 @@ hl.calculate_hilal_data(latitude, longitude, elevation, time_zone_str, loc_name=
 <img src="figures/hd1.png" width=600 height=400>
 
 ### 2. Get maps of moon properties 
-This include maps of moon altitude, longitude (topocentric and geocentric), moon-sun altitude difference (arc of vision; ARCV), moon width, and moon age. Below is an example line of script to get the map of moon altitude.
+
+This include maps of moon altitude, elongation (topocentric and geocentric), moon-sun altitude difference (arc of vision; ARCV), moon width, and moon age. Below is an example line of script to get the map of moon altitude.
 ```ruby
 hl.map_moon_altitude()
 ```
