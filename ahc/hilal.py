@@ -144,7 +144,7 @@ def calc_map_IQG(map_moon_age_utc):
 
 class hilal:
 
-	def __init__(self, hijri_year, hijri_month, calculate_maps=False, plus_1day=True, min_lat=-60.0, max_lat=60.0, min_long=-180.0, max_long=180.0, factor=0.5):
+	def __init__(self, hijri_year, hijri_month, calculate_maps=False, plus_1day=True, min_lat=-60.0, max_lat=70.0, min_long=-180.0, max_long=180.0, factor=0.5):
 
 		self.hijri_year = hijri_year
 		self.hijri_month = hijri_month

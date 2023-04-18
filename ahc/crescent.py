@@ -16,7 +16,7 @@ ts = api.load.timescale()
 ephem = api.load_file('de421.bsp')
 
 
-def get_map_moon_alt_atsunset(year, month, day, min_lat=-60.0, max_lat=60.0, min_long=-180.0, max_long=180.0, factor=0.5):
+def get_map_moon_alt_atsunset(year, month, day, min_lat=-60.0, max_lat=70.0, min_long=-180.0, max_long=180.0, factor=0.5):
 	import sys
 
 	min_lat1, max_lat1, min_long1, max_long1 = -90, 90, -180, 180
@@ -51,7 +51,7 @@ def get_map_moon_alt_atsunset(year, month, day, min_lat=-60.0, max_lat=60.0, min
 	return map_moon_alt
 
 
-def get_map_moon_arcv_atsunset(year, month, day, min_lat=-60.0, max_lat=60.0, min_long=-180.0, max_long=180.0, factor=0.5):
+def get_map_moon_arcv_atsunset(year, month, day, min_lat=-60.0, max_lat=70.0, min_long=-180.0, max_long=180.0, factor=0.5):
 	import sys
 
 	min_lat1, max_lat1, min_long1, max_long1 = -90, 90, -180, 180
@@ -89,7 +89,7 @@ def get_map_moon_arcv_atsunset(year, month, day, min_lat=-60.0, max_lat=60.0, mi
 	return map_moon_arcv	
 
 
-def get_map_moon_elongation_atsunset(year, month, day, min_lat=-60.0, max_lat=60.0, min_long=-180.0, max_long=180.0, factor=0.5):
+def get_map_moon_elongation_atsunset(year, month, day, min_lat=-60.0, max_lat=70.0, min_long=-180.0, max_long=180.0, factor=0.5):
 	import sys
 
 	min_lat1, max_lat1, min_long1, max_long1 = -90, 90, -180, 180
@@ -124,7 +124,7 @@ def get_map_moon_elongation_atsunset(year, month, day, min_lat=-60.0, max_lat=60
 	return map_moon_elongation
 
 
-def get_map_moon_geocentric_elongation_atsunset(year, month, day, min_lat=-60.0, max_lat=60.0, min_long=-180.0, max_long=180.0, factor=0.5):
+def get_map_moon_geocentric_elongation_atsunset(year, month, day, min_lat=-60.0, max_lat=70.0, min_long=-180.0, max_long=180.0, factor=0.5):
 	import sys
 
 	min_lat1, max_lat1, min_long1, max_long1 = -90, 90, -180, 180
@@ -159,7 +159,7 @@ def get_map_moon_geocentric_elongation_atsunset(year, month, day, min_lat=-60.0,
 	return map_moon_elongation
 
 
-def get_map_moon_width_atsunset(year, month, day, min_lat=-60.0, max_lat=60.0, min_long=-180.0, max_long=180.0, factor=0.5):
+def get_map_moon_width_atsunset(year, month, day, min_lat=-60.0, max_lat=70.0, min_long=-180.0, max_long=180.0, factor=0.5):
 	import sys
 
 	min_lat1, max_lat1, min_long1, max_long1 = -90, 90, -180, 180
@@ -195,7 +195,7 @@ def get_map_moon_width_atsunset(year, month, day, min_lat=-60.0, max_lat=60.0, m
 	return map_moon_width
 
 
-def get_map_moon_properties_atsunset(year, month, day, ijtima_utc, plus_1day=True, min_lat=-60.0, max_lat=60.0, min_long=-180.0, max_long=180.0, factor=0.5):
+def get_map_moon_properties_atsunset(year, month, day, ijtima_utc, plus_1day=True, min_lat=-60.0, max_lat=70.0, min_long=-180.0, max_long=180.0, factor=0.5):
 	import sys
 
 	min_lat1, max_lat1, min_long1, max_long1 = -90, 90, -180, 180
